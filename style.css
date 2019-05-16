@@ -1,0 +1,93 @@
+#gameMap {
+    display: grid;
+    grid: repeat(10, 1fr) / repeat(10, 1fr);
+    justify-content: center;
+    align-content: center;
+    width: 420px;
+    height: 420px;
+    border: 3px solid black;
+    background-color: aqua;
+    padding: 0px;
+    margin: 0px;
+}
+
+div {
+    width: 40px;
+    height: 40px;
+    border: 1px solid black;
+}
+
+.emptyField {
+    background-color: rgb(173, 205, 233);
+}
+
+.blankField {
+    background-image: url("/image/icon.png");
+    background-size: cover;
+}
+
+.knife {
+    background-color: rgb(173, 205, 233);
+    background-image: url("/image/knife.png");
+    background-size: cover;
+}
+
+.screwdriver {
+    background-color: rgb(173, 205, 233);
+    background-image: url("/image/screwdriver.png");
+    background-size: cover;
+}
+
+.fist {
+    background-color: rgb(173, 205, 233);
+    background-image: url("/image/fist.png");
+    background-size: cover;
+}
+
+.injection {
+    background-color: rgb(173, 205, 233);
+    background-image: url("/image/injection.png");
+    background-size: cover;
+}
+
+.drill {
+    background-color: rgb(173, 205, 233);
+    background-image: url("/image/drill.png");
+    background-size: cover;
+}
+
+.axe {
+    background-color: rgb(173, 205, 233);
+    background-image: url("/image/axe.png");
+    background-size: cover;
+}
+
+.flashlight {
+    background-color: rgb(173, 205, 233);
+    background-image: url("/image/flashlight.png");
+    background-size: cover;
+}
+
+.gun {
+    background-color: rgb(173, 205, 233);
+    background-image: url("/image/gun.png");
+    background-size: cover;
+}
+
+#playerOne {
+    background-color: rgb(173, 205, 233);
+    background-image: url("/image/player01.png");
+    background-size: cover;
+}
+
+#playerTwo {
+    background-color: rgb(173, 205, 233);
+    background-image: url("/image/player02.png");
+    background-size: cover;
+}
+
+div .highLight {
+    background-color: rgb(209, 223, 235);
+    box-shadow: 10px 10px 5px grey;
+    border-style: inset;
+}

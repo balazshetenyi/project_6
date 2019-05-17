@@ -1,3 +1,9 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    
+}
+
 #gameMap {
     display: grid;
     grid: repeat(10, 1fr) / repeat(10, 1fr);
@@ -11,83 +17,121 @@
     margin: 0px;
 }
 
-div {
+h3 {
+    text-align: center;
+}
+
+.playerOneSide {
+    width: 200px;
+    background-color: bisque;
+}
+.playerTwoSide {
+    width: 200px;
+    background-color: bisque;
+}
+
+.emptyField {
+    background-color: rgb(173, 205, 233);
     width: 40px;
     height: 40px;
     border: 1px solid black;
 }
 
-.emptyField {
-    background-color: rgb(173, 205, 233);
-}
-
 .blankField {
     background-image: url("/image/icon.png");
     background-size: cover;
+    width: 40px;
+    height: 40px;
+    border: 1px solid black;
 }
 
 .knife {
     background-color: rgb(173, 205, 233);
     background-image: url("/image/knife.png");
     background-size: cover;
+    width: 40px;
+    height: 40px;
+    border: 1px solid black;
 }
 
 .screwdriver {
     background-color: rgb(173, 205, 233);
     background-image: url("/image/screwdriver.png");
     background-size: cover;
+    width: 40px;
+    height: 40px;
+    border: 1px solid black;
 }
 
 .fist {
     background-color: rgb(173, 205, 233);
     background-image: url("/image/fist.png");
     background-size: cover;
+    width: 40px;
+    height: 40px;
+    border: 1px solid black;
 }
 
 .injection {
     background-color: rgb(173, 205, 233);
     background-image: url("/image/injection.png");
     background-size: cover;
+    width: 40px;
+    height: 40px;
+    border: 1px solid black;
 }
 
 .drill {
     background-color: rgb(173, 205, 233);
     background-image: url("/image/drill.png");
     background-size: cover;
+    width: 40px;
+    height: 40px;
+    border: 1px solid black;
 }
 
 .axe {
     background-color: rgb(173, 205, 233);
     background-image: url("/image/axe.png");
     background-size: cover;
+    width: 40px;
+    height: 40px;
+    border: 1px solid black;
 }
 
 .flashlight {
     background-color: rgb(173, 205, 233);
     background-image: url("/image/flashlight.png");
     background-size: cover;
+    width: 40px;
+    height: 40px;
+    border: 1px solid black;
 }
 
 .gun {
     background-color: rgb(173, 205, 233);
     background-image: url("/image/gun.png");
     background-size: cover;
+    width: 40px;
+    height: 40px;
+    border: 1px solid black;
 }
 
 #playerOne {
     background-color: rgb(173, 205, 233);
     background-image: url("/image/player01.png");
     background-size: cover;
+    width: 40px;
+    height: 40px;
+    border: 1px solid black;
 }
 
 #playerTwo {
     background-color: rgb(173, 205, 233);
     background-image: url("/image/player02.png");
     background-size: cover;
+    width: 40px;
+    height: 40px;
+    border: 1px solid black;
 }
 
-div .highLight {
-    background-color: rgb(209, 223, 235);
-    box-shadow: 10px 10px 5px grey;
-    border-style: inset;
-}

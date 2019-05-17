@@ -193,6 +193,10 @@ const move = (direction) => {
     steps += 1;
 }
 
+// Initialize active weapon =>
+let player = grid[x][y];
+let activeWeapon = $(player).attr("class");
+
 $(document).keydown(function (e) {
     let key = e.keyCode;
     // Directions =>
@@ -215,6 +219,7 @@ $(document).keydown(function (e) {
         } else if ($(left).attr("id") === "weapon") {
             pickUpTheWeapon(left);
             setActivePlayer();
+            setActiveWeapon();
             indexOfField(activePlayer);
         }
         
@@ -231,6 +236,7 @@ $(document).keydown(function (e) {
         } else if ($(right).attr("id") == "weapon") {
             pickUpTheWeapon(right);
             setActivePlayer();
+            setActiveWeapon();
             indexOfField(activePlayer);
         }
     } else if (key === 38) {
@@ -250,6 +256,7 @@ $(document).keydown(function (e) {
         } else if ($(up).attr("id") == "weapon") {
             pickUpTheWeapon(up);
             setActivePlayer();
+            setActiveWeapon();
             indexOfField(activePlayer);
         }
         
@@ -270,16 +277,11 @@ $(document).keydown(function (e) {
         } else if ($(down).attr("id") == "weapon") {
             pickUpTheWeapon(down);
             setActivePlayer();
+            setActiveWeapon();
             indexOfField(activePlayer);
         }
     }
 })
-
-
-
-
-// Highlight available steps =>
-let numberOfSteps = 3;
 
 
 
@@ -326,21 +328,10 @@ const allWeapons = {
     gun: new Weapon("gun", 30, false)
 }
 
-// allWeapons.fist.activeWeapon = false;
-console.log(allWeapons.fist);
-
-
-// Set active weapon
-let activatedWeapon;
-
-console.log(activatedWeapon);
 
 const setActiveWeapon = () => {
-    let player = grid[x][y];
-    let playersWeapon = $(player).attr("class");
-    allWeapons[playersWeapon].activeWeapon = true;
+    allWeapons[activeWeapon].activeWeapon = true;
 }
 
-let player = grid[x][y];
-let activeWeapon = $(player).attr("class");
-console.log(allWeapons[activeWeapon].name);
+// console.log(allWeapons[activeWeapon].name);
+

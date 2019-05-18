@@ -138,13 +138,16 @@ if ((playerOnePosition - vertical) == playerTwoPosition ||
 
 // Set the active player =>
 let activePlayer;
+let inactivePlayer;
 let steps = 0;
 const setActivePlayer = () => {
-    if (steps % 2 === 0) {
+    if (steps % 3 === 0) {
         activePlayer = $("#playerOne").attr("id");
+        inactivePlayer = $("#playerTwo").attr("id");
         // alert("It's you turn Player 1!");
     } else {
         activePlayer = $("#playerTwo").attr("id");
+        inactivePlayer = $("#playerOne").attr("id");
         // alert("It's you turn Player 2!");
     }
 }
@@ -213,7 +216,9 @@ $(document).keydown(function (e) {
             setActivePlayer();
             indexOfField(activePlayer);
         } else if (left == undefined) {
-            alert("Ther's no available field on your left!");
+            setTimeout(function() {
+              alert("Ther's no available field on your left!");
+            },3000);
         } else if ($(left).hasClass("blankField")) {
             alert("Do you think you can go through the wall? You ain't no superhero mate! :)");
         } else if ($(left).attr("id") === "weapon") {
@@ -318,14 +323,14 @@ const thePlayers = {
 // The weapons
 const allWeapons = {
     fist: new Weapon("fist", 10, true),
-    knife: new Weapon("knife", 15, false),
-    flashlight: new Weapon("flashlight", 15, false),
-    injection: new Weapon("injection", 15, false),
-    drill: new Weapon("drill", 20, false),
+    knife: new Weapon("knife", 20, false),
+    flashlight: new Weapon("flashlight", 20, false),
+    injection: new Weapon("injection", 20, false),
+    drill: new Weapon("drill", 30, false),
     wrench: new Weapon("wrench", 20, false),
-    screwdriver: new Weapon("screwdriver", 15, false),
-    axe: new Weapon("axe", 25, false),
-    gun: new Weapon("gun", 30, false)
+    screwdriver: new Weapon("screwdriver", 20, false),
+    axe: new Weapon("axe", 30, false),
+    gun: new Weapon("gun", 40, false)
 }
 
 
@@ -334,4 +339,39 @@ const setActiveWeapon = () => {
 }
 
 // console.log(allWeapons[activeWeapon].name);
+
+// The fight =>
+$(document).keydown(function (e) {
+    let key = e.keyCode;
+    // Check if players touch =>
+    let playerOnePosition = $("#playerOne").index();
+    let playerTwoPosition = $("#playerTwo").index();
+
+    if ((playerOnePosition - vertical) == playerTwoPosition && key === 17 ||
+        (playerOnePosition + vertical) == playerTwoPosition && key === 17 ||
+        (playerOnePosition - horizontal) == playerTwoPosition && key === 17 ||
+        (playerOnePosition + horizontal) == playerTwoPosition && key === 17) {
+            // The fight begin                
+            let playersChoice = prompt("You've been attacked! What would you like to do now? \n Enter 1 to defend. \n Enter 2 to fight back.");
+            if (playersChoice == 1) {
+                if (thePlayers[inactivePlayer].health > allWeapons[activeWeapon].damagePoint) {
+                    thePlayers[inactivePlayer].health -= (allWeapons[activeWeapon].damagePoint) / 2;
+                    console.log(thePlayers[inactivePlayer].health);
+                } else {
+                    thePlayers[inactivePlayer].health = 0; // => End of game <= //
+                    console.log(activePlayer + "  has won the game!");
+                }
+            } else if (playersChoice == 2) {
+                if (thePlayers[inactivePlayer].health > allWeapons[activeWeapon].damagePoint) {
+                    thePlayers[inactivePlayer].health -= allWeapons[activeWeapon].damagePoint;
+                    console.log(thePlayers[inactivePlayer].health);
+                } else {
+                    thePlayers[inactivePlayer].health = 0; // => End of game <= //
+                    console.log(activePlayer + "  has won the game!");
+                }
+            }
+        }
+})
+    
+
 

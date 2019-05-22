@@ -5,7 +5,7 @@
 const fields = [
     "emptyField",
     "blankField"
-];
+]
 
 const weapons = [
     "fist",
@@ -16,14 +16,55 @@ const weapons = [
     "flashlight",
     "gun",
     "screwdriver"
-];
-
-
+]
 
 const players = ["playerOne", "playerTwo"];
 
 // Possible popup messages
 const popups = [];
+
+
+// Player's constructor
+class Player {
+    constructor(name, health, remainingSteps, activeWeapon, isPlayerActive) {
+        this.name = name;
+        this.health = health;
+        this.activeWeapon = activeWeapon;
+        this.remainingSteps = remainingSteps;
+        this.isPlayerActive = isPlayerActive;
+    }
+}
+
+// Weapons class constructor
+class Weapon {
+    constructor(name, damagePoint, active) {
+        this.name = name;
+        this.damagePoint = damagePoint;
+        this.active = active;
+    }
+}
+
+
+// The Players
+const allPlayers = {
+    playerOne: new Player("playerOne", 100, 3, "fist", true),
+    playerTwo: new Player("playerTwo", 100, 3, "fist", false)
+}
+
+
+// The weapons
+const allWeapons = {
+    fist: new Weapon("fist", 10, true),
+    knife: new Weapon("knife", 20, false),
+    flashlight: new Weapon("flashlight", 20, false),
+    injection: new Weapon("injection", 20, false),
+    drill: new Weapon("drill", 30, false),
+    wrench: new Weapon("wrench", 20, false),
+    screwdriver: new Weapon("screwdriver", 20, false),
+    axe: new Weapon("axe", 30, false),
+    gun: new Weapon("gun", 40, false)
+}
+
 
 
 // 2D array
@@ -35,6 +76,7 @@ const make2DArray = (cols, rows) => {
     for (let i = 0; i < arr.length; i++) {
         arr[i] = new Array(rows);
     }
+
     return arr;
 }
 
@@ -77,9 +119,11 @@ setBlank();
 const setWeapons = () => {
     let maxWeapons = 4;
     let weaponPlaced = 0;
+    let weapon,
+        field;
     while (maxWeapons > weaponPlaced) {
-        let weapon = randomClass(weapons);
-        let field = grid[random()][random()];
+        weapon = randomClass(weapons);
+        field = grid[random()][random()];
         if (weapon != "fist" && $(field).hasClass("emptyField")) {
             $(field).removeClass("emptyField").attr("id", "weapon").addClass(weapon);
             weaponPlaced += 1;
@@ -141,14 +185,16 @@ let activePlayer;
 let inactivePlayer;
 let steps = 0;
 const setActivePlayer = () => {
-    if (steps % 3 === 0) {
+    if (steps < 3) {
         activePlayer = $("#playerOne").attr("id");
         inactivePlayer = $("#playerTwo").attr("id");
         // alert("It's you turn Player 1!");
-    } else {
+    } else if (steps >= 3 && steps < 5) {
         activePlayer = $("#playerTwo").attr("id");
         inactivePlayer = $("#playerOne").attr("id");
         // alert("It's you turn Player 2!");
+    } else {
+        steps -= 6;
     }
 }
 setActivePlayer();
@@ -163,7 +209,7 @@ const indexOfField = (fieldOf) => {
             if (grid[i][j].attr("id") == fieldOf) {
                 x = i;
                 y = j;
-            }else{}
+            }
         }
     }
     
@@ -182,23 +228,33 @@ indexOfField(activePlayer);
 
 const pickUpTheWeapon = (direction) => {
     let newWeapon = $(direction).attr("class");
-    let weaponOnPlayer = activeWeapon;
+    let weaponOnPlayer = playersWeapon;
     $(direction).removeAttr("id").attr("id", activePlayer).addClass(newWeapon);
     $(grid[x][y]).removeAttr("id").attr("id", "weapon").addClass(weaponOnPlayer);
     steps += 1;
+    allPlayers[activePlayer].remainingSteps -= 1;
+    allPlayers[activePlayer].activeWeapon = playersWeapon;
 }
 
 
 const move = (direction) => {
     let player = grid[x][y];
-    $(direction).removeClass("emptyField").attr("id", activePlayer).addClass(activeWeapon);
-    $(player).removeAttr("id").removeClass(activeWeapon).addClass("emptyField");
+    $(direction).removeClass("emptyField").attr("id", activePlayer).addClass(playersWeapon);
+    $(player).removeAttr("id").removeClass(playersWeapon).addClass("emptyField");
     steps += 1;
+    allPlayers[activePlayer].remainingSteps -= 1;
 }
+
+
+// Set remaining steps back to initial
+
+
 
 // Initialize active weapon =>
 let player = grid[x][y];
-let activeWeapon = $(player).attr("class");
+let playersWeapon = $(player).attr("class");
+
+
 
 $(document).keydown(function (e) {
     let key = e.keyCode;
@@ -208,7 +264,7 @@ $(document).keydown(function (e) {
     let up;
     let down;
     // Class of active weapon
-    activeWeapon = $(grid[x][y]).attr("class");
+    playersWeapon = $(grid[x][y]).attr("class");
     
     if (key === 37) {
         if ($(left).hasClass("emptyField")) {
@@ -224,7 +280,6 @@ $(document).keydown(function (e) {
         } else if ($(left).attr("id") === "weapon") {
             pickUpTheWeapon(left);
             setActivePlayer();
-            setActiveWeapon();
             indexOfField(activePlayer);
         }
         
@@ -241,7 +296,6 @@ $(document).keydown(function (e) {
         } else if ($(right).attr("id") == "weapon") {
             pickUpTheWeapon(right);
             setActivePlayer();
-            setActiveWeapon();
             indexOfField(activePlayer);
         }
     } else if (key === 38) {
@@ -261,7 +315,6 @@ $(document).keydown(function (e) {
         } else if ($(up).attr("id") == "weapon") {
             pickUpTheWeapon(up);
             setActivePlayer();
-            setActiveWeapon();
             indexOfField(activePlayer);
         }
         
@@ -282,10 +335,12 @@ $(document).keydown(function (e) {
         } else if ($(down).attr("id") == "weapon") {
             pickUpTheWeapon(down);
             setActivePlayer();
-            setActiveWeapon();
             indexOfField(activePlayer);
         }
     }
+    setActiveWeapon();
+    showRemainingSteps();
+    showActiveWeapon();
 })
 
 
@@ -294,51 +349,19 @@ $(document).keydown(function (e) {
 // STEP 3 => THE FIGHT =>
 
 
-// Player's constructor
-class Player {
-    constructor(name, health, active) {
-        this.name = name;
-        this.health = health;
-        this.active = active;
-    }
-}
-
-// Weapons class constructor
-class Weapon {
-    constructor(name, damagePoint, playersWeapon) {
-        this.name = name;
-        this.damagePoint = damagePoint;
-        this.activeWeapon = playersWeapon;
-    }
-}
 
 
-// The Players
-const thePlayers = {
-    playerOne: new Player("playerOne", 100, true),
-    playerTwo: new Player("playerTwo", 100, false)
-}
-
-
-// The weapons
-const allWeapons = {
-    fist: new Weapon("fist", 10, true),
-    knife: new Weapon("knife", 20, false),
-    flashlight: new Weapon("flashlight", 20, false),
-    injection: new Weapon("injection", 20, false),
-    drill: new Weapon("drill", 30, false),
-    wrench: new Weapon("wrench", 20, false),
-    screwdriver: new Weapon("screwdriver", 20, false),
-    axe: new Weapon("axe", 30, false),
-    gun: new Weapon("gun", 40, false)
-}
-
+$(".playerOneHealth").append("<h5>" + allPlayers.playerOne.name + "'s health is: <span>" + allPlayers.playerOne.health + "</span> % </h5>");
+$(".playerTwoHealth").append("<h5>" + allPlayers.playerTwo.name + "'s health is: <span>" + allPlayers.playerTwo.health + "</span> % </h5>");
+$(".playerOneSide .remainingStepsOne").append("<h5>Remaining steps: <span>" + allPlayers.playerOne.remainingSteps + "</span></h5>");
+$(".playerTwoSide .remainingStepsTwo").append("<h5>Remaining steps: <span>" + allPlayers.playerTwo.remainingSteps + "</span></h5>");
+$(".playerOneSide .activeWeaponOne").append("<h5>Your active weapon is: <span>" + allPlayers.playerOne.activeWeapon + "</span></h5>");
+$(".playerTwoSide .activeWeaponTwo").append("<h5>Your active weapon is: <span>" + allPlayers.playerTwo.activeWeapon + "</span></h5>");
 
 const setActiveWeapon = () => {
-    allWeapons[activeWeapon].activeWeapon = true;
+    allWeapons[playersWeapon].activeWeapon = playersWeapon;
 }
 
-// console.log(allWeapons[activeWeapon].name);
 
 // The fight =>
 $(document).keydown(function (e) {
@@ -351,27 +374,61 @@ $(document).keydown(function (e) {
         (playerOnePosition + vertical) == playerTwoPosition && key === 17 ||
         (playerOnePosition - horizontal) == playerTwoPosition && key === 17 ||
         (playerOnePosition + horizontal) == playerTwoPosition && key === 17) {
-            // The fight begin                
-            let playersChoice = prompt("You've been attacked! What would you like to do now? \n Enter 1 to defend. \n Enter 2 to fight back.");
-            if (playersChoice == 1) {
-                if (thePlayers[inactivePlayer].health > allWeapons[activeWeapon].damagePoint) {
-                    thePlayers[inactivePlayer].health -= (allWeapons[activeWeapon].damagePoint) / 2;
-                    console.log(thePlayers[inactivePlayer].health);
-                } else {
-                    thePlayers[inactivePlayer].health = 0; // => End of game <= //
-                    console.log(activePlayer + "  has won the game!");
-                }
-            } else if (playersChoice == 2) {
-                if (thePlayers[inactivePlayer].health > allWeapons[activeWeapon].damagePoint) {
-                    thePlayers[inactivePlayer].health -= allWeapons[activeWeapon].damagePoint;
-                    console.log(thePlayers[inactivePlayer].health);
-                } else {
-                    thePlayers[inactivePlayer].health = 0; // => End of game <= //
-                    console.log(activePlayer + "  has won the game!");
-                }
+        // The fight begin =>
+        let playersChoice = prompt("You've been attacked! What would you like to do now? \n Enter 1 to defend. \n Enter 2 to fight back.");
+        if (playersChoice == 1) {
+            if (allPlayers[inactivePlayer].health > allWeapons[playersWeapon].damagePoint) {
+                allPlayers[inactivePlayer].health -= (allWeapons[playersWeapon].damagePoint) / 2;
+                steps += 1;
+                showPlayersHealth();
+                showRemainingSteps();
+                console.log(allPlayers[inactivePlayer].health);
+            } else {
+                allPlayers[inactivePlayer].health = 0; // => End of game <= //
+                 steps += 1;
+                 showPlayersHealth();
+                 showRemainingSteps();
+                console.log(activePlayer + "  has won the game!");
+            }
+        } else if (playersChoice == 2) {
+            if (allPlayers[inactivePlayer].health > allWeapons[playersWeapon].damagePoint) {
+                allPlayers[inactivePlayer].health -= allWeapons[playersWeapon].damagePoint;
+                steps += 1;
+                showPlayersHealth();
+                showRemainingSteps();
+                console.log(allPlayers[inactivePlayer].health);
+            } else {
+                allPlayers[inactivePlayer].health = 0; // => End of game <= //
+                steps += 1;
+                showPlayersHealth();
+                showRemainingSteps();
+                console.log(activePlayer + "  has won the game!");
             }
         }
+    }
 })
     
 
+// Helper functions =>
+
+const showPlayersHealth = () => {
+    // Show health for player 1
+    $(".playerOneHealth span").text(allPlayers.playerOne.health); 
+    // Show health for player 2
+    $(".playerTwoHealth span").text(allPlayers.playerTwo.health);
+}
+
+const showRemainingSteps = () => {
+    $(".remainingStepsOne span").text(allPlayers.playerOne.remainingSteps);
+    $(".remainingStepsTwo span").text(allPlayers.playerTwo.remainingSteps);
+}
+
+const showActiveWeapon = () => {
+    $(".activeWeaponOne span").text(allPlayers.playerOne.activeWeapon);
+    $(".activeWeaponTwo span").text(allPlayers.playerTwo.activeWeapon);
+}
+
+const showDamagePoint = () => {
+    
+}
 

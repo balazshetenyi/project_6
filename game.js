@@ -319,6 +319,7 @@ $(document).keydown(function (e) {
             indexOfField(activePlayer);
             setActiveWeapon();
             showActiveWeapon();
+            showDamagePoint();
         }
         
         
@@ -337,6 +338,7 @@ $(document).keydown(function (e) {
             indexOfField(activePlayer);
             setActiveWeapon();
             showActiveWeapon();
+            showDamagePoint();
         }
     } else if (key === 38) {
         if (x > 0) {
@@ -358,6 +360,7 @@ $(document).keydown(function (e) {
             indexOfField(activePlayer);
             setActiveWeapon();
             showActiveWeapon();
+            showDamagePoint();
         }
         
     } else if (key === 40) {
@@ -380,6 +383,7 @@ $(document).keydown(function (e) {
             indexOfField(activePlayer);
             setActiveWeapon();
             showActiveWeapon();
+            showDamagePoint();
         }
     }
     showRemainingSteps();
@@ -401,6 +405,8 @@ $(".playerOneSide .activeWeaponOne").append("<h5>Your active weapon is: </h5>");
 $(".playerOneSide .activeWeaponOne").append("<img src=" + allWeapons[allPlayers.playerOne.activeWeapon].url + ">");
 $(".playerTwoSide .activeWeaponTwo").append("<h5>Your active weapon is: </h5>");
 $(".playerTwoSide .activeWeaponTwo").append("<img src=" + allWeapons[allPlayers.playerTwo.activeWeapon].url + ">");
+$(".playerOneSide .damagePointOne").append("<h5>Weapon has <span>" + allWeapons[allPlayers.playerOne.activeWeapon].damagePoint + "</span> damage point!</h5>");
+$(".playerTwoSide .damagePointTwo").append("<h5>Weapon has <span>" + allWeapons[allPlayers.playerTwo.activeWeapon].damagePoint + "</span> damage point!</h5>");
 
 
 
@@ -443,6 +449,7 @@ $(document).keydown(function (e) {
         }
         showPlayersHealth();
         showRemainingSteps();
+
     }
 })
     
@@ -469,6 +476,8 @@ const showActiveWeapon = () => {
 }
 
 const showDamagePoint = () => {
-    
+    $(".damagePointOne span").text(allWeapons[allPlayers.playerOne.activeWeapon].damagePoint);
+    $(".damagePointTwo span").text(allWeapons[allPlayers.playerTwo.activeWeapon].damagePoint);
+
 }
 

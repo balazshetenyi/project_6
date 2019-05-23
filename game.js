@@ -15,7 +15,8 @@ const weapons = [
     "axe",
     "flashlight",
     "gun",
-    "screwdriver"
+    "screwdriver",
+    "wrench"
 ]
 
 const players = ["playerOne", "playerTwo"];
@@ -37,8 +38,9 @@ class Player {
 
 // Weapons class constructor
 class Weapon {
-    constructor(name, damagePoint, active) {
+    constructor(name, url, damagePoint, active) {
         this.name = name;
+        this.url = url;
         this.damagePoint = damagePoint;
         this.active = active;
     }
@@ -54,15 +56,15 @@ const allPlayers = {
 
 // The weapons
 const allWeapons = {
-    fist: new Weapon("fist", 10, true),
-    knife: new Weapon("knife", 20, false),
-    flashlight: new Weapon("flashlight", 20, false),
-    injection: new Weapon("injection", 20, false),
-    drill: new Weapon("drill", 30, false),
-    wrench: new Weapon("wrench", 20, false),
-    screwdriver: new Weapon("screwdriver", 20, false),
-    axe: new Weapon("axe", 30, false),
-    gun: new Weapon("gun", 40, false)
+    fist: new Weapon("fist", "/image/fist.png", 10, true),
+    knife: new Weapon("knife", "/image/knife.png", 20, false),
+    flashlight: new Weapon("flashlight", "/image/flashlight.png", 20, false),
+    injection: new Weapon("injection", "/image/injection.png", 20, false),
+    drill: new Weapon("drill", "/image/drill.png", 30, false),
+    wrench: new Weapon("wrench", "/image/wrench.png", 20, false),
+    screwdriver: new Weapon("screwdriver", "/image/screwdriver.png", 20, false),
+    axe: new Weapon("axe", "/image/axe.png", 30, false),
+    gun: new Weapon("gun", "/image/gun.png", 40, false)
 }
 
 
@@ -181,21 +183,39 @@ if ((playerOnePosition - vertical) == playerTwoPosition ||
 
 
 // Set the active player =>
-let activePlayer;
-let inactivePlayer;
+let activePlayer = allPlayers.playerOne.name;
+let inactivePlayer = allPlayers.playerTwo.name;
 let steps = 0;
+// const setActivePlayer = () => {
+//     if (steps < 3) {
+//         activePlayer = $("#playerOne").attr("id");
+//         inactivePlayer = $("#playerTwo").attr("id");
+//         // alert("It's you turn Player 1!");
+//     } else if (steps >= 3 && steps < 5) {
+//         activePlayer = $("#playerTwo").attr("id");
+//         inactivePlayer = $("#playerOne").attr("id");
+//         // alert("It's you turn Player 2!");
+//     } else {
+//         steps -= 6;
+//     }
+// }
+// setActivePlayer();
 const setActivePlayer = () => {
-    if (steps < 3) {
-        activePlayer = $("#playerOne").attr("id");
-        inactivePlayer = $("#playerTwo").attr("id");
+    if (allPlayers.playerOne.remainingSteps === 0) {
+        activePlayer = allPlayers.playerTwo.name;
+        inactivePlayer = allPlayers.playerOne.name;
+        allPlayers.playerOne.isPlayerActive = false;
+        allPlayers.playerTwo.isPlayerActive = true;
+        allPlayers.playerOne.remainingSteps = 3;
         // alert("It's you turn Player 1!");
-    } else if (steps >= 3 && steps < 5) {
-        activePlayer = $("#playerTwo").attr("id");
-        inactivePlayer = $("#playerOne").attr("id");
+    } else if (allPlayers.playerTwo.remainingSteps === 0) {
+        activePlayer = allPlayers.playerOne.name;
+        inactivePlayer = allPlayers.playerTwo.name;
+        allPlayers.playerOne.isPlayerActive = true;
+        allPlayers.playerTwo.isPlayerActive = false;
+        allPlayers.playerTwo.remainingSteps = 3;
         // alert("It's you turn Player 2!");
-    } else {
-        steps -= 6;
-    }
+    } 
 }
 setActivePlayer();
 
@@ -228,24 +248,40 @@ indexOfField(activePlayer);
 
 const pickUpTheWeapon = (direction) => {
     let newWeapon = $(direction).attr("class");
-    let weaponOnPlayer = playersWeapon;
-    $(direction).removeAttr("id").attr("id", activePlayer).addClass(newWeapon);
-    $(grid[x][y]).removeAttr("id").attr("id", "weapon").addClass(weaponOnPlayer);
+    $(direction).removeAttr("id").attr("id", activePlayer);
+    $(grid[x][y]).removeAttr("id").attr("id", "weapon").addClass(playersWeapon);
     steps += 1;
     allPlayers[activePlayer].remainingSteps -= 1;
-    allPlayers[activePlayer].activeWeapon = playersWeapon;
 }
 
 
 const move = (direction) => {
-    let player = grid[x][y];
+    player = grid[x][y];
     $(direction).removeClass("emptyField").attr("id", activePlayer).addClass(playersWeapon);
     $(player).removeAttr("id").removeClass(playersWeapon).addClass("emptyField");
     steps += 1;
     allPlayers[activePlayer].remainingSteps -= 1;
 }
 
+const setActiveWeapon = () => {
+    allPlayers.playerOne.activeWeapon = $("#playerOne").attr("class");
+    allPlayers.playerTwo.activeWeapon = $("#playerTwo").attr("class");
+}
 
+
+const defend = () => {
+    allPlayers[inactivePlayer].health -= (allWeapons[playersWeapon].damagePoint) / 2;
+    steps += 1;
+    allPlayers[activePlayer].remainingSteps = 0;
+}
+
+const fight = () => {
+    allPlayers[inactivePlayer].health -= (allWeapons[playersWeapon].damagePoint);
+    steps += 1;
+    allPlayers[activePlayer].remainingSteps = 0;
+
+    console.log(steps);
+}
 // Set remaining steps back to initial
 
 
@@ -273,7 +309,7 @@ $(document).keydown(function (e) {
             indexOfField(activePlayer);
         } else if (left == undefined) {
             setTimeout(function() {
-              alert("Ther's no available field on your left!");
+                alert("Ther's no available field on your left!");
             },3000);
         } else if ($(left).hasClass("blankField")) {
             alert("Do you think you can go through the wall? You ain't no superhero mate! :)");
@@ -281,6 +317,8 @@ $(document).keydown(function (e) {
             pickUpTheWeapon(left);
             setActivePlayer();
             indexOfField(activePlayer);
+            setActiveWeapon();
+            showActiveWeapon();
         }
         
         
@@ -297,6 +335,8 @@ $(document).keydown(function (e) {
             pickUpTheWeapon(right);
             setActivePlayer();
             indexOfField(activePlayer);
+            setActiveWeapon();
+            showActiveWeapon();
         }
     } else if (key === 38) {
         if (x > 0) {
@@ -316,6 +356,8 @@ $(document).keydown(function (e) {
             pickUpTheWeapon(up);
             setActivePlayer();
             indexOfField(activePlayer);
+            setActiveWeapon();
+            showActiveWeapon();
         }
         
     } else if (key === 40) {
@@ -336,11 +378,11 @@ $(document).keydown(function (e) {
             pickUpTheWeapon(down);
             setActivePlayer();
             indexOfField(activePlayer);
+            setActiveWeapon();
+            showActiveWeapon();
         }
     }
-    setActiveWeapon();
     showRemainingSteps();
-    showActiveWeapon();
 })
 
 
@@ -355,12 +397,12 @@ $(".playerOneHealth").append("<h5>" + allPlayers.playerOne.name + "'s health is:
 $(".playerTwoHealth").append("<h5>" + allPlayers.playerTwo.name + "'s health is: <span>" + allPlayers.playerTwo.health + "</span> % </h5>");
 $(".playerOneSide .remainingStepsOne").append("<h5>Remaining steps: <span>" + allPlayers.playerOne.remainingSteps + "</span></h5>");
 $(".playerTwoSide .remainingStepsTwo").append("<h5>Remaining steps: <span>" + allPlayers.playerTwo.remainingSteps + "</span></h5>");
-$(".playerOneSide .activeWeaponOne").append("<h5>Your active weapon is: <span>" + allPlayers.playerOne.activeWeapon + "</span></h5>");
-$(".playerTwoSide .activeWeaponTwo").append("<h5>Your active weapon is: <span>" + allPlayers.playerTwo.activeWeapon + "</span></h5>");
+$(".playerOneSide .activeWeaponOne").append("<h5>Your active weapon is: </h5>");
+$(".playerOneSide .activeWeaponOne").append("<img src=" + allWeapons[allPlayers.playerOne.activeWeapon].url + ">");
+$(".playerTwoSide .activeWeaponTwo").append("<h5>Your active weapon is: </h5>");
+$(".playerTwoSide .activeWeaponTwo").append("<img src=" + allWeapons[allPlayers.playerTwo.activeWeapon].url + ">");
 
-const setActiveWeapon = () => {
-    allWeapons[playersWeapon].activeWeapon = playersWeapon;
-}
+
 
 
 // The fight =>
@@ -378,33 +420,29 @@ $(document).keydown(function (e) {
         let playersChoice = prompt("You've been attacked! What would you like to do now? \n Enter 1 to defend. \n Enter 2 to fight back.");
         if (playersChoice == 1) {
             if (allPlayers[inactivePlayer].health > allWeapons[playersWeapon].damagePoint) {
-                allPlayers[inactivePlayer].health -= (allWeapons[playersWeapon].damagePoint) / 2;
-                steps += 1;
-                showPlayersHealth();
-                showRemainingSteps();
+                defend();
+                setActivePlayer();
+                indexOfField(activePlayer);
                 console.log(allPlayers[inactivePlayer].health);
             } else {
                 allPlayers[inactivePlayer].health = 0; // => End of game <= //
-                 steps += 1;
-                 showPlayersHealth();
-                 showRemainingSteps();
+                steps += 1;
                 console.log(activePlayer + "  has won the game!");
             }
         } else if (playersChoice == 2) {
             if (allPlayers[inactivePlayer].health > allWeapons[playersWeapon].damagePoint) {
-                allPlayers[inactivePlayer].health -= allWeapons[playersWeapon].damagePoint;
-                steps += 1;
-                showPlayersHealth();
-                showRemainingSteps();
+                fight();
+                setActivePlayer();
+                indexOfField(activePlayer);
                 console.log(allPlayers[inactivePlayer].health);
             } else {
                 allPlayers[inactivePlayer].health = 0; // => End of game <= //
                 steps += 1;
-                showPlayersHealth();
-                showRemainingSteps();
                 console.log(activePlayer + "  has won the game!");
             }
         }
+        showPlayersHealth();
+        showRemainingSteps();
     }
 })
     
@@ -424,8 +462,10 @@ const showRemainingSteps = () => {
 }
 
 const showActiveWeapon = () => {
-    $(".activeWeaponOne span").text(allPlayers.playerOne.activeWeapon);
-    $(".activeWeaponTwo span").text(allPlayers.playerTwo.activeWeapon);
+    $(".activeWeaponOne img").remove();
+    $(".playerOneSide .activeWeaponOne").append("<img src=" + allWeapons[allPlayers.playerOne.activeWeapon].url + ">");
+    $(".activeWeaponTwo img").remove();
+    $(".playerTwoSide .activeWeaponTwo").append("<img src=" + allWeapons[allPlayers.playerTwo.activeWeapon].url + ">");
 }
 
 const showDamagePoint = () => {

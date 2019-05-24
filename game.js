@@ -27,8 +27,9 @@ const popups = [];
 
 // Player's constructor
 class Player {
-    constructor(name, health, remainingSteps, activeWeapon, isPlayerActive) {
+    constructor(name, userName, health, remainingSteps, activeWeapon, isPlayerActive) {
         this.name = name;
+        this.userName = userName;
         this.health = health;
         this.activeWeapon = activeWeapon;
         this.remainingSteps = remainingSteps;
@@ -49,8 +50,8 @@ class Weapon {
 
 // The Players
 const allPlayers = {
-    playerOne: new Player("playerOne", 100, 3, "fist", true),
-    playerTwo: new Player("playerTwo", 100, 3, "fist", false)
+    playerOne: new Player("playerOne", "Player 1", 100, 3, "fist", true),
+    playerTwo: new Player("playerTwo", "Player 2", 100, 3, "fist", false)
 }
 
 
@@ -67,6 +68,14 @@ const allWeapons = {
     gun: new Weapon("gun", "/image/gun.png", 40, false)
 }
 
+allPlayers.playerOne.userName = prompt("Please, enter username for Player 1!");
+allPlayers.playerTwo.userName = prompt("Please, enter username for Player 2!");
+if (allPlayers.playerOne.userName === null || allPlayers.playerOne.userName === "") {
+    allPlayers.playerOne.userName = "Player 1";
+} 
+if (allPlayers.playerTwo.userName === null || allPlayers.playerTwo.userName === "") {
+    allPlayers.playerTwo.userName = "Player 2";
+}
 
 
 // 2D array
@@ -185,21 +194,8 @@ if ((playerOnePosition - vertical) == playerTwoPosition ||
 // Set the active player =>
 let activePlayer = allPlayers.playerOne.name;
 let inactivePlayer = allPlayers.playerTwo.name;
-let steps = 0;
-// const setActivePlayer = () => {
-//     if (steps < 3) {
-//         activePlayer = $("#playerOne").attr("id");
-//         inactivePlayer = $("#playerTwo").attr("id");
-//         // alert("It's you turn Player 1!");
-//     } else if (steps >= 3 && steps < 5) {
-//         activePlayer = $("#playerTwo").attr("id");
-//         inactivePlayer = $("#playerOne").attr("id");
-//         // alert("It's you turn Player 2!");
-//     } else {
-//         steps -= 6;
-//     }
-// }
-// setActivePlayer();
+// let steps = 0;
+
 const setActivePlayer = () => {
     if (allPlayers.playerOne.remainingSteps === 0) {
         activePlayer = allPlayers.playerTwo.name;
@@ -250,7 +246,7 @@ const pickUpTheWeapon = (direction) => {
     let newWeapon = $(direction).attr("class");
     $(direction).removeAttr("id").attr("id", activePlayer);
     $(grid[x][y]).removeAttr("id").attr("id", "weapon").addClass(playersWeapon);
-    steps += 1;
+    // steps += 1;
     allPlayers[activePlayer].remainingSteps -= 1;
 }
 
@@ -259,7 +255,7 @@ const move = (direction) => {
     player = grid[x][y];
     $(direction).removeClass("emptyField").attr("id", activePlayer).addClass(playersWeapon);
     $(player).removeAttr("id").removeClass(playersWeapon).addClass("emptyField");
-    steps += 1;
+    // steps += 1;
     allPlayers[activePlayer].remainingSteps -= 1;
 }
 
@@ -271,16 +267,15 @@ const setActiveWeapon = () => {
 
 const defend = () => {
     allPlayers[inactivePlayer].health -= (allWeapons[playersWeapon].damagePoint) / 2;
-    steps += 1;
+    // steps += 1;
     allPlayers[activePlayer].remainingSteps = 0;
 }
 
 const fight = () => {
     allPlayers[inactivePlayer].health -= (allWeapons[playersWeapon].damagePoint);
-    steps += 1;
+    // steps += 1;
     allPlayers[activePlayer].remainingSteps = 0;
 
-    console.log(steps);
 }
 // Set remaining steps back to initial
 
@@ -306,6 +301,7 @@ $(document).keydown(function (e) {
         if ($(left).hasClass("emptyField")) {
             move(left);
             setActivePlayer();
+            showNextPlayer();
             indexOfField(activePlayer);
         } else if (left == undefined) {
             setTimeout(function() {
@@ -316,6 +312,7 @@ $(document).keydown(function (e) {
         } else if ($(left).attr("id") === "weapon") {
             pickUpTheWeapon(left);
             setActivePlayer();
+            showNextPlayer();
             indexOfField(activePlayer);
             setActiveWeapon();
             showActiveWeapon();
@@ -327,6 +324,7 @@ $(document).keydown(function (e) {
         if ($(right).hasClass("emptyField")) {
             move(right);
             setActivePlayer();
+            showNextPlayer();
             indexOfField(activePlayer);
         } else if (right == undefined) {
             alert("Ther's no available field on your left!");
@@ -335,6 +333,7 @@ $(document).keydown(function (e) {
         } else if ($(right).attr("id") == "weapon") {
             pickUpTheWeapon(right);
             setActivePlayer();
+            showNextPlayer();
             indexOfField(activePlayer);
             setActiveWeapon();
             showActiveWeapon();
@@ -349,6 +348,7 @@ $(document).keydown(function (e) {
         if ($(up).hasClass("emptyField")) {
             move(up);
             setActivePlayer();
+            showNextPlayer();
             indexOfField(activePlayer);
         } else if (up == undefined) {
             alert("Turn around mate!");
@@ -357,6 +357,7 @@ $(document).keydown(function (e) {
         } else if ($(up).attr("id") == "weapon") {
             pickUpTheWeapon(up);
             setActivePlayer();
+            showNextPlayer();
             indexOfField(activePlayer);
             setActiveWeapon();
             showActiveWeapon();
@@ -372,6 +373,7 @@ $(document).keydown(function (e) {
         if ($(down).hasClass("emptyField")) {
             move(down);
             setActivePlayer();
+            showNextPlayer();
             indexOfField(activePlayer);
         } else if (down == undefined) {
             alert("Where are you going?");
@@ -380,6 +382,7 @@ $(document).keydown(function (e) {
         } else if ($(down).attr("id") == "weapon") {
             pickUpTheWeapon(down);
             setActivePlayer();
+            showNextPlayer();
             indexOfField(activePlayer);
             setActiveWeapon();
             showActiveWeapon();
@@ -396,22 +399,28 @@ $(document).keydown(function (e) {
 
 
 
-
-$(".playerOneHealth").append("<h5>" + allPlayers.playerOne.name + "'s health is: <span>" + allPlayers.playerOne.health + "</span> % </h5>");
-$(".playerTwoHealth").append("<h5>" + allPlayers.playerTwo.name + "'s health is: <span>" + allPlayers.playerTwo.health + "</span> % </h5>");
-$(".playerOneSide .remainingStepsOne").append("<h5>Remaining steps: <span>" + allPlayers.playerOne.remainingSteps + "</span></h5>");
-$(".playerTwoSide .remainingStepsTwo").append("<h5>Remaining steps: <span>" + allPlayers.playerTwo.remainingSteps + "</span></h5>");
+$(".playerOneSide .nameOfPlayerOne").append("<h2><span>" + allPlayers.playerOne.userName + "</span></h2>");
+$(".playerTwoSide .nameOfPlayerTwo").append("<h2><span>" + allPlayers.playerTwo.userName + "</span></h2>");
+$(".playerOneHealth").append("<h5>Health: <span>" + allPlayers.playerOne.health + "</span> % </h5>");
+$(".playerTwoHealth").append("<h5>Health: <span>" + allPlayers.playerTwo.health + "</span> % </h5>");
 $(".playerOneSide .activeWeaponOne").append("<h5>Your active weapon is: </h5>");
 $(".playerOneSide .activeWeaponOne").append("<img src=" + allWeapons[allPlayers.playerOne.activeWeapon].url + ">");
 $(".playerTwoSide .activeWeaponTwo").append("<h5>Your active weapon is: </h5>");
 $(".playerTwoSide .activeWeaponTwo").append("<img src=" + allWeapons[allPlayers.playerTwo.activeWeapon].url + ">");
 $(".playerOneSide .damagePointOne").append("<h5>Weapon has <span>" + allWeapons[allPlayers.playerOne.activeWeapon].damagePoint + "</span> damage point!</h5>");
 $(".playerTwoSide .damagePointTwo").append("<h5>Weapon has <span>" + allWeapons[allPlayers.playerTwo.activeWeapon].damagePoint + "</span> damage point!</h5>");
+$(".playerOneSide .turnOne").append("<h4>It's your turn!</h4>");
+$(".playerTwoSide .turnTwo").append("<h4>It's your turn!</h4>");
+$(".playerOneSide .remainingStepsOne").append("<h5>You've got <span>" + allPlayers.playerOne.remainingSteps + "</span> steps left!</h5>");
+$(".playerTwoSide .remainingStepsTwo").append("<h5>You've got <span>" + allPlayers.playerTwo.remainingSteps + "</span> steps left!</h5>");
+
 
 
 
 
 // The fight =>
+
+
 $(document).keydown(function (e) {
     let key = e.keyCode;
     // Check if players touch =>
@@ -422,12 +431,14 @@ $(document).keydown(function (e) {
         (playerOnePosition + vertical) == playerTwoPosition && key === 17 ||
         (playerOnePosition - horizontal) == playerTwoPosition && key === 17 ||
         (playerOnePosition + horizontal) == playerTwoPosition && key === 17) {
+
         // The fight begin =>
         let playersChoice = prompt("You've been attacked! What would you like to do now? \n Enter 1 to defend. \n Enter 2 to fight back.");
         if (playersChoice == 1) {
             if (allPlayers[inactivePlayer].health > allWeapons[playersWeapon].damagePoint) {
                 defend();
                 setActivePlayer();
+                showNextPlayer();
                 indexOfField(activePlayer);
                 console.log(allPlayers[inactivePlayer].health);
             } else {
@@ -439,6 +450,7 @@ $(document).keydown(function (e) {
             if (allPlayers[inactivePlayer].health > allWeapons[playersWeapon].damagePoint) {
                 fight();
                 setActivePlayer();
+                showNextPlayer();
                 indexOfField(activePlayer);
                 console.log(allPlayers[inactivePlayer].health);
             } else {
@@ -481,3 +493,15 @@ const showDamagePoint = () => {
 
 }
 
+const showNextPlayer = () => {
+    if (allPlayers.playerOne.isPlayerActive) {
+        $(".playerTwoSide h4").hide();
+        $(".remainingStepsTwo").hide();
+        $(".playerOneSide *").show();
+    } else if (allPlayers.playerTwo.isPlayerActive) {
+        $(".playerOneSide h4").hide();
+        $(".remainingStepsOne").hide();  
+        $(".playerTwoSide *").show();        
+    }
+}
+showNextPlayer();

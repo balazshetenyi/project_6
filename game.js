@@ -22,7 +22,12 @@ const weapons = [
 const players = ["playerOne", "playerTwo"];
 
 // Possible popup messages
-const popups = [];
+const popupMessage = [
+    "Where are you going?",
+    "Do you think you can go through the wall?",
+    "You ain't no superhero mate! :)",
+    "Turn around mate!"
+];
 
 
 // Player's constructor
@@ -283,7 +288,12 @@ const fight = () => {
 
 }
 
-
+const message = () => {
+    $(".message").append("<p>" + randomClass(popupMessage) + "</p>");
+    setTimeout(function () {
+        $(".message p").hide();
+    }, 3000);
+}
 
 
 // Initialize active weapon =>
@@ -317,11 +327,9 @@ $(document).keydown(function (e) {
                 indexOfField(activePlayer);
             }
         } else if (left == undefined) {
-            setTimeout(function() {
-                alert("Ther's no available field on your left!");
-            },3000);
+            message();
         } else if ($(left).hasClass("blankField")) {
-            alert("Do you think you can go through the wall? You ain't no superhero mate! :)");
+            message();
         } else if ($(left).attr("id") === "weapon") {
             // If there's weapon to pick up
             pickUpTheWeapon(left);
@@ -349,9 +357,9 @@ $(document).keydown(function (e) {
                 indexOfField(activePlayer);
             }
         } else if (right == undefined) {
-            alert("Ther's no available field on your left!");
+            message();
         } else if ($(right).hasClass("blankField")) {
-            alert("Do you think you can go through the wall? You ain't no superhero mate! :)");
+            message();
         } else if ($(right).attr("id") == "weapon") {
             // If there's weapon to pick up
             pickUpTheWeapon(right);
@@ -382,9 +390,9 @@ $(document).keydown(function (e) {
                 indexOfField(activePlayer);
             }
         } else if (up == undefined) {
-            alert("Turn around mate!");
+            message();
         } else if ($(up).hasClass("blankField")) {
-            alert("Do you think you can go through the wall? You ain't no superhero mate! :)");
+            message();
         } else if ($(up).attr("id") == "weapon") {
             // If there's weapon to pick up
             pickUpTheWeapon(up);
@@ -416,9 +424,9 @@ $(document).keydown(function (e) {
                 indexOfField(activePlayer);
             }
         } else if (down == undefined) {
-            alert("Where are you going?");
+            message();
         } else if ($(down).hasClass("blankField")) {
-            alert("Do you think you can go through the wall? You ain't no superhero mate! :)");
+            message();
         } else if ($(down).attr("id") == "weapon") {
             // If there's weapon to pick up
             pickUpTheWeapon(down);
@@ -475,6 +483,7 @@ $(document).keydown(function (e) {
 
         // The fight begin =>
         let playersChoice = prompt("You've been attacked! What would you like to do now? \n Enter 1 to defend. \n Enter 2 to fight back.");
+        
         if (playersChoice == 1) {
             if (allPlayers[inactivePlayer].health > allWeapons[playersWeapon].damagePoint) {
                 // Defend
@@ -542,3 +551,4 @@ const showNextPlayer = () => {
     }
 }
 showNextPlayer();
+

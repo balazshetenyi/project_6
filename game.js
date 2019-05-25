@@ -27,7 +27,7 @@ const popups = [];
 
 // Player's constructor
 class Player {
-    constructor(name, userName, health, remainingSteps, activeWeapon, isPlayerActive) {
+    constructor(name, userName, health, activeWeapon, remainingSteps, isPlayerActive) {
         this.name = name;
         this.userName = userName;
         this.health = health;
@@ -35,6 +35,7 @@ class Player {
         this.remainingSteps = remainingSteps;
         this.isPlayerActive = isPlayerActive;
     }
+    weaponToDrop;
 }
 
 // Weapons class constructor
@@ -50,8 +51,8 @@ class Weapon {
 
 // The Players
 const allPlayers = {
-    playerOne: new Player("playerOne", "Player 1", 100, 3, "fist", true),
-    playerTwo: new Player("playerTwo", "Player 2", 100, 3, "fist", false)
+    playerOne: new Player("playerOne", "Player 1", 100, "fist", 3, true),
+    playerTwo: new Player("playerTwo", "Player 2", 100, "fist", 3, false)
 }
 
 
@@ -68,8 +69,9 @@ const allWeapons = {
     gun: new Weapon("gun", "/image/gun.png", 40, false)
 }
 
-allPlayers.playerOne.userName = prompt("Please, enter username for Player 1!");
-allPlayers.playerTwo.userName = prompt("Please, enter username for Player 2!");
+// Set username
+allPlayers.playerOne.userName = prompt("Enter username for Player 1!");
+allPlayers.playerTwo.userName = prompt("Enter username for Player 2!");
 if (allPlayers.playerOne.userName === null || allPlayers.playerOne.userName === "") {
     allPlayers.playerOne.userName = "Player 1";
 } 
@@ -126,6 +128,7 @@ const setBlank = () => {
 }
 setBlank();
 
+
 // Set random weapons
 const setWeapons = () => {
     let maxWeapons = 4;
@@ -147,6 +150,7 @@ const setWeapons = () => {
 }
 setWeapons();
 
+
 // Set players
 let maxPlayers = 2;
 let playersPlaced = 0;
@@ -164,6 +168,7 @@ const setPlayers = () => {
     }
 }
 setPlayers();
+
 
 // Check if players touch =>
 let playerOnePosition = $("#playerOne").index();
@@ -185,8 +190,8 @@ if ((playerOnePosition - vertical) == playerTwoPosition ||
 
 
 
-// STEP 2 => MOVEMENTS
 
+// STEP 2 => MOVEMENTS
 
 
 
@@ -194,7 +199,6 @@ if ((playerOnePosition - vertical) == playerTwoPosition ||
 // Set the active player =>
 let activePlayer = allPlayers.playerOne.name;
 let inactivePlayer = allPlayers.playerTwo.name;
-// let steps = 0;
 
 const setActivePlayer = () => {
     if (allPlayers.playerOne.remainingSteps === 0) {
@@ -203,14 +207,12 @@ const setActivePlayer = () => {
         allPlayers.playerOne.isPlayerActive = false;
         allPlayers.playerTwo.isPlayerActive = true;
         allPlayers.playerOne.remainingSteps = 3;
-        // alert("It's you turn Player 1!");
     } else if (allPlayers.playerTwo.remainingSteps === 0) {
         activePlayer = allPlayers.playerOne.name;
         inactivePlayer = allPlayers.playerTwo.name;
         allPlayers.playerOne.isPlayerActive = true;
         allPlayers.playerTwo.isPlayerActive = false;
         allPlayers.playerTwo.remainingSteps = 3;
-        // alert("It's you turn Player 2!");
     } 
 }
 setActivePlayer();
@@ -243,19 +245,25 @@ indexOfField(activePlayer);
 
 
 const pickUpTheWeapon = (direction) => {
-    let newWeapon = $(direction).attr("class");
+    allPlayers[activePlayer].weaponToDrop = $(grid[x][y]).attr("class");
     $(direction).removeAttr("id").attr("id", activePlayer);
-    $(grid[x][y]).removeAttr("id").attr("id", "weapon").addClass(playersWeapon);
-    // steps += 1;
+    $(grid[x][y]).removeAttr("id").removeAttr("class").addClass("emptyField");
     allPlayers[activePlayer].remainingSteps -= 1;
 }
 
+// Drop weapon in place
+const dropWeapon = (direction) => {
+    $(direction).removeClass("emptyField").attr("id", activePlayer).addClass(playersWeapon);
+    $(grid[x][y]).removeAttr("id").removeAttr("class")
+        .attr("id", "weapon").addClass(allPlayers[activePlayer].weaponToDrop);
+    allPlayers[activePlayer].weaponToDrop = undefined;
+    allPlayers[activePlayer].remainingSteps -= 1;
+}
 
 const move = (direction) => {
     player = grid[x][y];
     $(direction).removeClass("emptyField").attr("id", activePlayer).addClass(playersWeapon);
     $(player).removeAttr("id").removeClass(playersWeapon).addClass("emptyField");
-    // steps += 1;
     allPlayers[activePlayer].remainingSteps -= 1;
 }
 
@@ -264,20 +272,17 @@ const setActiveWeapon = () => {
     allPlayers.playerTwo.activeWeapon = $("#playerTwo").attr("class");
 }
 
-
 const defend = () => {
     allPlayers[inactivePlayer].health -= (allWeapons[playersWeapon].damagePoint) / 2;
-    // steps += 1;
     allPlayers[activePlayer].remainingSteps = 0;
 }
 
 const fight = () => {
     allPlayers[inactivePlayer].health -= (allWeapons[playersWeapon].damagePoint);
-    // steps += 1;
     allPlayers[activePlayer].remainingSteps = 0;
 
 }
-// Set remaining steps back to initial
+
 
 
 
@@ -299,10 +304,18 @@ $(document).keydown(function (e) {
     
     if (key === 37) {
         if ($(left).hasClass("emptyField")) {
-            move(left);
-            setActivePlayer();
-            showNextPlayer();
-            indexOfField(activePlayer);
+            if (allPlayers[activePlayer].weaponToDrop != undefined) {
+                // If there's weapon to drop
+                dropWeapon(left);
+                setActivePlayer();
+                showNextPlayer();
+                indexOfField(activePlayer);
+            } else {
+                move(left);
+                setActivePlayer();
+                showNextPlayer();
+                indexOfField(activePlayer);
+            }
         } else if (left == undefined) {
             setTimeout(function() {
                 alert("Ther's no available field on your left!");
@@ -310,6 +323,7 @@ $(document).keydown(function (e) {
         } else if ($(left).hasClass("blankField")) {
             alert("Do you think you can go through the wall? You ain't no superhero mate! :)");
         } else if ($(left).attr("id") === "weapon") {
+            // If there's weapon to pick up
             pickUpTheWeapon(left);
             setActivePlayer();
             showNextPlayer();
@@ -322,15 +336,24 @@ $(document).keydown(function (e) {
         
     } else if (key === 39) {
         if ($(right).hasClass("emptyField")) {
-            move(right);
-            setActivePlayer();
-            showNextPlayer();
-            indexOfField(activePlayer);
+            if (allPlayers[activePlayer].weaponToDrop != undefined) {
+                // If there's weapon to drop
+                dropWeapon(right);
+                setActivePlayer();
+                showNextPlayer();
+                indexOfField(activePlayer);
+            } else {
+                move(right);
+                setActivePlayer();
+                showNextPlayer();
+                indexOfField(activePlayer);
+            }
         } else if (right == undefined) {
             alert("Ther's no available field on your left!");
         } else if ($(right).hasClass("blankField")) {
             alert("Do you think you can go through the wall? You ain't no superhero mate! :)");
         } else if ($(right).attr("id") == "weapon") {
+            // If there's weapon to pick up
             pickUpTheWeapon(right);
             setActivePlayer();
             showNextPlayer();
@@ -346,15 +369,24 @@ $(document).keydown(function (e) {
             up = undefined;
         }
         if ($(up).hasClass("emptyField")) {
-            move(up);
-            setActivePlayer();
-            showNextPlayer();
-            indexOfField(activePlayer);
+            if (allPlayers[activePlayer].weaponToDrop != undefined) {
+                // If there's weapon to drop
+                dropWeapon(up);
+                setActivePlayer();
+                showNextPlayer();
+                indexOfField(activePlayer);
+            } else {
+                move(up);
+                setActivePlayer();
+                showNextPlayer();
+                indexOfField(activePlayer);
+            }
         } else if (up == undefined) {
             alert("Turn around mate!");
         } else if ($(up).hasClass("blankField")) {
             alert("Do you think you can go through the wall? You ain't no superhero mate! :)");
         } else if ($(up).attr("id") == "weapon") {
+            // If there's weapon to pick up
             pickUpTheWeapon(up);
             setActivePlayer();
             showNextPlayer();
@@ -371,15 +403,24 @@ $(document).keydown(function (e) {
             down = undefined;
         }
         if ($(down).hasClass("emptyField")) {
-            move(down);
-            setActivePlayer();
-            showNextPlayer();
-            indexOfField(activePlayer);
+            if (allPlayers[activePlayer].weaponToDrop != undefined) {
+                // If there's weapon to drop
+                dropWeapon(down);
+                setActivePlayer();
+                showNextPlayer();
+                indexOfField(activePlayer);
+            } else {
+                move(down);
+                setActivePlayer();
+                showNextPlayer();
+                indexOfField(activePlayer);
+            }
         } else if (down == undefined) {
             alert("Where are you going?");
         } else if ($(down).hasClass("blankField")) {
             alert("Do you think you can go through the wall? You ain't no superhero mate! :)");
         } else if ($(down).attr("id") == "weapon") {
+            // If there's weapon to pick up
             pickUpTheWeapon(down);
             setActivePlayer();
             showNextPlayer();
@@ -436,27 +477,25 @@ $(document).keydown(function (e) {
         let playersChoice = prompt("You've been attacked! What would you like to do now? \n Enter 1 to defend. \n Enter 2 to fight back.");
         if (playersChoice == 1) {
             if (allPlayers[inactivePlayer].health > allWeapons[playersWeapon].damagePoint) {
+                // Defend
                 defend();
                 setActivePlayer();
                 showNextPlayer();
                 indexOfField(activePlayer);
-                console.log(allPlayers[inactivePlayer].health);
             } else {
                 allPlayers[inactivePlayer].health = 0; // => End of game <= //
-                steps += 1;
-                console.log(activePlayer + "  has won the game!");
+                alert(activePlayer + "  has won the game!");
             }
         } else if (playersChoice == 2) {
             if (allPlayers[inactivePlayer].health > allWeapons[playersWeapon].damagePoint) {
+                // Fight back
                 fight();
                 setActivePlayer();
                 showNextPlayer();
                 indexOfField(activePlayer);
-                console.log(allPlayers[inactivePlayer].health);
             } else {
                 allPlayers[inactivePlayer].health = 0; // => End of game <= //
-                steps += 1;
-                console.log(activePlayer + "  has won the game!");
+                alert(activePlayer + "  has won the game!");
             }
         }
         showPlayersHealth();
@@ -469,9 +508,7 @@ $(document).keydown(function (e) {
 // Helper functions =>
 
 const showPlayersHealth = () => {
-    // Show health for player 1
     $(".playerOneHealth span").text(allPlayers.playerOne.health); 
-    // Show health for player 2
     $(".playerTwoHealth span").text(allPlayers.playerTwo.health);
 }
 

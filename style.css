@@ -7,6 +7,10 @@ h1 {
     margin: 0;
 }
 
+h2 {
+    margin-top: 0;
+}
+
 h3 {
     text-align: center;
 }
@@ -18,6 +22,12 @@ h4 {
     color: red;
 }
 
+.message h3 {
+    background-color: rgb(132, 174, 214);
+    margin: 10px 160px;
+    padding: 5px;
+    color: red;
+}
 
 .container {
     display: flex;
@@ -39,17 +49,6 @@ h4 {
     margin: 0px;
 }
 
-input {
-    background-color: rgb(132, 174, 214);
-    color: red;
-    padding: 8px;
-    margin: 10px;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: bold;
-    font-style: italic;
-}
-
 .header {
     display: flex;
     justify-content: center;
@@ -69,12 +68,14 @@ input {
     text-align: center;
     box-sizing: border-box;
     width: 200px;
+    max-height: 420px;
     background-color: rgb(75, 84, 95);
 }
 .playerTwoSide {
     text-align: center;
     box-sizing: border-box;
     width: 200px;
+    max-height: 420px;
     background-color: rgb(75, 84, 95);
 }
 
@@ -95,20 +96,20 @@ input {
     border: 1px solid black;
 }
 
-.knife {
+.pawprints{
     box-sizing: border-box;
     background-color: rgb(173, 205, 233);
-    background-image: url("/image/knife.png");
+    background-image: url("/image/pawprints.png");
     background-size: cover;
     width: 100%;
     height: 100%;
     border: 1px solid black;
 }
 
-.screwdriver {
+.smartphone {
     box-sizing: border-box;
     background-color: rgb(173, 205, 233);
-    background-image: url("/image/screwdriver.png");
+    background-image: url("/image/smartphone.png");
     background-size: cover;
     width: 100%;
     height: 100%;
@@ -125,60 +126,60 @@ input {
     border: 1px solid black;
 }
 
-.injection {
+.egg {
     box-sizing: border-box;
     background-color: rgb(173, 205, 233);
-    background-image: url("/image/injection.png");
+    background-image: url("/image/egg.png");
     background-size: cover;
     width: 100%;
     height: 100%;
     border: 1px solid black;
 }
 
-.drill {
+.bracelet {
     box-sizing: border-box;
     background-color: rgb(173, 205, 233);
-    background-image: url("/image/drill.png");
+    background-image: url("/image/bracelet.png");
     background-size: cover;
     width: 100%;
     height: 100%;
     border: 1px solid black;
 }
 
-.axe {
+.backpack {
     box-sizing: border-box;
     background-color: rgb(173, 205, 233);
-    background-image: url("/image/axe.png");
+    background-image: url("/image/backpack.png");
     background-size: cover;
     width: 100%;
     height: 100%;
     border: 1px solid black;
 }
 
-.flashlight {
+.stardust {
     box-sizing: border-box;
     background-color: rgb(173, 205, 233);
-    background-image: url("/image/flashlight.png");
+    background-image: url("/image/stardust.png");
     background-size: cover;
     width: 100%;
     height: 100%;
     border: 1px solid black;
 }
 
-.gun {
+.tornado {
     box-sizing: border-box;
     background-color: rgb(173, 205, 233);
-    background-image: url("/image/gun.png");
+    background-image: url("/image/tornado.png");
     background-size: cover;
     width: 100%;
     height: 100%;
     border: 1px solid black;
 }
 
-.wrench {
+.compass {
     box-sizing: border-box;
     background-color: rgb(173, 205, 233);
-    background-image: url("/image/wrench.png");
+    background-image: url("/image/compass.png");
     background-size: cover;
     width: 100%;
     height: 100%;
@@ -188,7 +189,7 @@ input {
 #playerOne {
     box-sizing: border-box;
     background-color: rgb(173, 205, 233);
-    background-image: url("/image/player01.png");
+    background-image: url("/image/pikachu-2.png");
     background-size: cover;
     width: 100%;
     height: 100%;
@@ -198,10 +199,22 @@ input {
 #playerTwo {
     box-sizing: border-box;
     background-color: rgb(173, 205, 233);
-    background-image: url("/image/player02.png");
+    background-image: url("/image/bullbasaur.png");
     background-size: cover;
     width: 100%;
     height: 100%;
     border: 1px solid black;
 }
 
+.picture1 img {
+    max-width: 60px;
+}
+
+.picture2 img {
+    max-width: 60px;
+}
+
+img {
+    max-width: 40px;
+    margin-bottom: 0;
+}

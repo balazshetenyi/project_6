@@ -9,14 +9,14 @@ const fields = [
 
 const weapons = [
     "fist",
-    "knife",
-    "injection",
-    "drill",
-    "axe",
-    "flashlight",
-    "gun",
-    "screwdriver",
-    "wrench"
+    "pawprints",
+    "egg",
+    "bracelet",
+    "backpack",
+    "stardust",
+    "tornado",
+    "smartphone",
+    "compass"
 ]
 
 const players = ["playerOne", "playerTwo"];
@@ -27,6 +27,10 @@ const popupMessage = [
     "Do you think you can go through the wall?",
     "You ain't no superhero mate! :)",
     "Turn around mate!"
+];
+const attackedMessage = [
+    "You've been attacked! What you gonna do now?",
+    "Press 1 to defend or press 2 to fight back."
 ];
 
 
@@ -64,14 +68,14 @@ const allPlayers = {
 // The weapons
 const allWeapons = {
     fist: new Weapon("fist", "/image/fist.png", 10, true),
-    knife: new Weapon("knife", "/image/knife.png", 20, false),
-    flashlight: new Weapon("flashlight", "/image/flashlight.png", 20, false),
-    injection: new Weapon("injection", "/image/injection.png", 20, false),
-    drill: new Weapon("drill", "/image/drill.png", 30, false),
-    wrench: new Weapon("wrench", "/image/wrench.png", 20, false),
-    screwdriver: new Weapon("screwdriver", "/image/screwdriver.png", 20, false),
-    axe: new Weapon("axe", "/image/axe.png", 30, false),
-    gun: new Weapon("gun", "/image/gun.png", 40, false)
+    pawprints: new Weapon("pawprints", "/image/pawprints.png", 20, false),
+    stardust: new Weapon("stardust", "/image/stardust.png", 20, false),
+    egg: new Weapon("egg", "/image/egg.png", 20, false),
+    bracelet: new Weapon("bracelet", "/image/bracelet.png", 30, false),
+    compass: new Weapon("compass", "/image/compass.png", 20, false),
+    smartphone: new Weapon("smartphone", "/image/smartphone.png", 20, false),
+    backpack: new Weapon("backpack", "/image/backpack.png", 30, false),
+    tornado: new Weapon("tornado", "/image/tornado.png", 40, false)
 }
 
 // Set username
@@ -288,8 +292,8 @@ const fight = () => {
 
 }
 
-const message = () => {
-    $(".message").append("<p>" + randomClass(popupMessage) + "</p>");
+const message = (whatMessage) => {
+    $(".message").append("<p>" + randomClass(whatMessage) + "</p>");
     setTimeout(function () {
         $(".message p").hide();
     }, 3000);
@@ -327,9 +331,9 @@ $(document).keydown(function (e) {
                 indexOfField(activePlayer);
             }
         } else if (left == undefined) {
-            message();
+            message(popupMessage);
         } else if ($(left).hasClass("blankField")) {
-            message();
+            message(popupMessage);
         } else if ($(left).attr("id") === "weapon") {
             // If there's weapon to pick up
             pickUpTheWeapon(left);
@@ -357,9 +361,9 @@ $(document).keydown(function (e) {
                 indexOfField(activePlayer);
             }
         } else if (right == undefined) {
-            message();
+            message(popupMessage);
         } else if ($(right).hasClass("blankField")) {
-            message();
+            message(popupMessage);
         } else if ($(right).attr("id") == "weapon") {
             // If there's weapon to pick up
             pickUpTheWeapon(right);
@@ -390,9 +394,9 @@ $(document).keydown(function (e) {
                 indexOfField(activePlayer);
             }
         } else if (up == undefined) {
-            message();
+            message(popupMessage);
         } else if ($(up).hasClass("blankField")) {
-            message();
+            message(popupMessage);
         } else if ($(up).attr("id") == "weapon") {
             // If there's weapon to pick up
             pickUpTheWeapon(up);
@@ -424,9 +428,9 @@ $(document).keydown(function (e) {
                 indexOfField(activePlayer);
             }
         } else if (down == undefined) {
-            message();
+            message(popupMessage);
         } else if ($(down).hasClass("blankField")) {
-            message();
+            message(popupMessage);
         } else if ($(down).attr("id") == "weapon") {
             // If there's weapon to pick up
             pickUpTheWeapon(down);
@@ -470,49 +474,65 @@ $(".playerTwoSide .remainingStepsTwo").append("<h5>You've got <span>" + allPlaye
 // The fight =>
 
 
-$(document).keydown(function (e) {
-    let key = e.keyCode;
-    // Check if players touch =>
-    let playerOnePosition = $("#playerOne").index();
-    let playerTwoPosition = $("#playerTwo").index();
+$(document).keydown(function(e) {
+  let key = e.keyCode;
+  // Check if players touch =>
+  let playerOnePosition = $("#playerOne").index();
+  let playerTwoPosition = $("#playerTwo").index();
 
-    if ((playerOnePosition - vertical) == playerTwoPosition && key === 17 ||
-        (playerOnePosition + vertical) == playerTwoPosition && key === 17 ||
-        (playerOnePosition - horizontal) == playerTwoPosition && key === 17 ||
-        (playerOnePosition + horizontal) == playerTwoPosition && key === 17) {
-
-        // The fight begin =>
-        let playersChoice = prompt("You've been attacked! What would you like to do now? \n Enter 1 to defend. \n Enter 2 to fight back.");
-        
-        if (playersChoice == 1) {
-            if (allPlayers[inactivePlayer].health > allWeapons[playersWeapon].damagePoint) {
-                // Defend
-                defend();
-                setActivePlayer();
-                showNextPlayer();
-                indexOfField(activePlayer);
-            } else {
-                allPlayers[inactivePlayer].health = 0; // => End of game <= //
-                alert(activePlayer + "  has won the game!");
-            }
-        } else if (playersChoice == 2) {
-            if (allPlayers[inactivePlayer].health > allWeapons[playersWeapon].damagePoint) {
-                // Fight back
-                fight();
-                setActivePlayer();
-                showNextPlayer();
-                indexOfField(activePlayer);
-            } else {
-                allPlayers[inactivePlayer].health = 0; // => End of game <= //
-                alert(activePlayer + "  has won the game!");
-            }
-        }
-        showPlayersHealth();
-        showRemainingSteps();
-
+  if (
+    playerOnePosition - vertical == playerTwoPosition ||
+    playerOnePosition + vertical == playerTwoPosition ||
+    playerOnePosition - horizontal == playerTwoPosition ||
+    playerOnePosition + horizontal == playerTwoPosition
+  ) {
+    // The fight begin =>
+    // let playersChoice = prompt("You've been attacked! What would you like to do now? \n Enter 1 to defend. \n Enter 2 to fight back.");
+    if (key === 17) {
+      $(".message").append(
+        "<h3>" +
+          attackedMessage[0] +
+          "</h3>" +
+          "<p>" +
+          attackedMessage[1] +
+          "</p>"
+      );
     }
-})
-    
+  }
+
+  if (key == 49) {
+    if (
+      allPlayers[inactivePlayer].health > allWeapons[playersWeapon].damagePoint
+    ) {
+      // Defend
+      defend();
+      setActivePlayer();
+      showNextPlayer();
+      indexOfField(activePlayer);
+    } else {
+      allPlayers[inactivePlayer].health = 0; // => End of game <= //
+      // alert(allPlayers[activePlayer].userName + "  has won the game!");
+    }
+    $(".message *").hide();
+  } else if (key == 50) {
+    if (
+      allPlayers[inactivePlayer].health > allWeapons[playersWeapon].damagePoint
+    ) {
+      // Fight back
+      fight();
+      setActivePlayer();
+      showNextPlayer();
+      indexOfField(activePlayer);
+    } else {
+      allPlayers[inactivePlayer].health = 0; // => End of game <= //
+      checkPlayersHealth();
+      // alert(allPlayers[activePlayer].userName + "  has won the game!");
+    }
+    $(".message *").hide();
+  }
+  showPlayersHealth();
+  showRemainingSteps();
+});
 
 // Helper functions =>
 
@@ -552,3 +572,8 @@ const showNextPlayer = () => {
 }
 showNextPlayer();
 
+const checkPlayersHealth = () => {
+    if (allPlayers[inactivePlayer].health === 0) {
+      alert(allPlayers[activePlayer].userName + "  has won the game!");
+    }
+}

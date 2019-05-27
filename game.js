@@ -451,7 +451,7 @@ $(document).keydown(function (e) {
 // STEP 3 => THE FIGHT =>
 
 
-
+// Information boards =>
 $(".playerOneSide .nameOfPlayerOne").append("<h2><span>" + allPlayers.playerOne.userName + "</span></h2>");
 $(".playerTwoSide .nameOfPlayerTwo").append("<h2><span>" + allPlayers.playerTwo.userName + "</span></h2>");
 $(".playerOneHealth").append("<h5>Health: <span>" + allPlayers.playerOne.health + "</span> % </h5>");
@@ -466,7 +466,7 @@ $(".playerOneSide .turnOne").append("<h4>It's your turn!</h4>");
 $(".playerTwoSide .turnTwo").append("<h4>It's your turn!</h4>");
 $(".playerOneSide .remainingStepsOne").append("<h5>You've got <span>" + allPlayers.playerOne.remainingSteps + "</span> steps left!</h5>");
 $(".playerTwoSide .remainingStepsTwo").append("<h5>You've got <span>" + allPlayers.playerTwo.remainingSteps + "</span> steps left!</h5>");
-
+$(".controls").append("<p>To control: Use the arrow keys!</p><p>To fight: Use the Ctrl key!</p>");
 
 
 
@@ -487,7 +487,6 @@ $(document).keydown(function(e) {
     playerOnePosition + horizontal == playerTwoPosition
   ) {
     // The fight begin =>
-    // let playersChoice = prompt("You've been attacked! What would you like to do now? \n Enter 1 to defend. \n Enter 2 to fight back.");
     if (key === 17) {
       $(".message").append(
         "<h3>" +
@@ -511,7 +510,6 @@ $(document).keydown(function(e) {
       indexOfField(activePlayer);
     } else {
       allPlayers[inactivePlayer].health = 0; // => End of game <= //
-      // alert(allPlayers[activePlayer].userName + "  has won the game!");
     }
     $(".message *").hide();
   } else if (key == 50) {
@@ -526,7 +524,6 @@ $(document).keydown(function(e) {
     } else {
       allPlayers[inactivePlayer].health = 0; // => End of game <= //
       checkPlayersHealth();
-      // alert(allPlayers[activePlayer].userName + "  has won the game!");
     }
     $(".message *").hide();
   }
@@ -577,3 +574,4 @@ const checkPlayersHealth = () => {
       alert(allPlayers[activePlayer].userName + "  has won the game!");
     }
 }
+

@@ -316,7 +316,7 @@ $(document).keydown(function (e) {
     // Class of active weapon
     playersWeapon = $(grid[x][y]).attr("class");
     
-    if (key === 37) {
+    if (key === 37) {   // Moving left
         if ($(left).hasClass("emptyField")) {
             if (allPlayers[activePlayer].weaponToDrop != undefined) {
                 // If there's weapon to drop
@@ -330,9 +330,7 @@ $(document).keydown(function (e) {
                 showNextPlayer();
                 indexOfField(activePlayer);
             }
-        } else if (left == undefined) {
-            message(popupMessage);
-        } else if ($(left).hasClass("blankField")) {
+        } else if (left == undefined || $(left).hasClass("blankField")) {
             message(popupMessage);
         } else if ($(left).attr("id") === "weapon") {
             // If there's weapon to pick up
@@ -346,7 +344,7 @@ $(document).keydown(function (e) {
         }
         
         
-    } else if (key === 39) {
+    } else if (key === 39) {    // Moving right
         if ($(right).hasClass("emptyField")) {
             if (allPlayers[activePlayer].weaponToDrop != undefined) {
                 // If there's weapon to drop
@@ -360,9 +358,7 @@ $(document).keydown(function (e) {
                 showNextPlayer();
                 indexOfField(activePlayer);
             }
-        } else if (right == undefined) {
-            message(popupMessage);
-        } else if ($(right).hasClass("blankField")) {
+        } else if (right == undefined || $(right).hasClass("blankField")) {
             message(popupMessage);
         } else if ($(right).attr("id") == "weapon") {
             // If there's weapon to pick up
@@ -374,7 +370,7 @@ $(document).keydown(function (e) {
             showActiveWeapon();
             showDamagePoint();
         }
-    } else if (key === 38) {
+    } else if (key === 38) {    // Moving up
         if (x > 0) {
             up = grid[x-1][y];
         } else {
@@ -393,9 +389,7 @@ $(document).keydown(function (e) {
                 showNextPlayer();
                 indexOfField(activePlayer);
             }
-        } else if (up == undefined) {
-            message(popupMessage);
-        } else if ($(up).hasClass("blankField")) {
+        } else if (up == undefined || $(up).hasClass("blankField")) {
             message(popupMessage);
         } else if ($(up).attr("id") == "weapon") {
             // If there's weapon to pick up
@@ -408,7 +402,7 @@ $(document).keydown(function (e) {
             showDamagePoint();
         }
         
-    } else if (key === 40) {
+    } else if (key === 40) {    // Moving down
         if (x < 9) {
             down = grid[x + 1][y];
         } else {
@@ -427,9 +421,7 @@ $(document).keydown(function (e) {
                 showNextPlayer();
                 indexOfField(activePlayer);
             }
-        } else if (down == undefined) {
-            message(popupMessage);
-        } else if ($(down).hasClass("blankField")) {
+        } else if (down == undefined || $(down).hasClass("blankField")) {
             message(popupMessage);
         } else if ($(down).attr("id") == "weapon") {
             // If there's weapon to pick up

@@ -479,7 +479,7 @@ $(document).keydown(function(e) {
     playerOnePosition + horizontal == playerTwoPosition
   ) {
     // The fight begin =>
-    if (key === 17) {
+    if (key === 17) {   // Ctrl pressed
       $(".message").append(
         "<h3>" +
           attackedMessage[0] +
@@ -491,7 +491,7 @@ $(document).keydown(function(e) {
     }
   }
 
-  if (key == 49) {
+  if (key == 49) {  // Press 1 to defend
     if (
       allPlayers[inactivePlayer].health > allWeapons[playersWeapon].damagePoint
     ) {
@@ -504,7 +504,7 @@ $(document).keydown(function(e) {
       allPlayers[inactivePlayer].health = 0; // => End of game <= //
     }
     $(".message *").hide();
-  } else if (key == 50) {
+  } else if (key == 50) {   // Press 2 to fight back
     if (
       allPlayers[inactivePlayer].health > allWeapons[playersWeapon].damagePoint
     ) {

@@ -1,6 +1,3 @@
-// STEP 1 => THE MAP
-
-
 // Class lists
 const fields = [
     "emptyField",
@@ -89,6 +86,11 @@ if (allPlayers.playerTwo.userName === null || allPlayers.playerTwo.userName === 
 }
 
 
+
+
+// STEP 1 => THE MAP
+
+
 // 2D array
 let rows = 10;
 let cols = 10;
@@ -116,7 +118,7 @@ const setup = () => {
 }
 setup();
 
-console.log(grid);
+// console.log(grid);
 
 // Rnadom number
 const random = () => {
@@ -196,13 +198,6 @@ if ((playerOnePosition - vertical) == playerTwoPosition ||
         playersPlaced = 0;
     setPlayers();
 }
-
-
-
-
-// STEP 2 => MOVEMENTS
-
-
 
 
 // Set the active player =>

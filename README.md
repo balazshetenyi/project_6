@@ -1,4 +1,4 @@
-# <<<<< Turn based board game with JavaScript and jQuery. >>>>>
+# Turn based board game with JavaScript and jQuery
 
 __The Map:__
 

@@ -26,5 +26,6 @@ During combat, the game works is as follows:
 * If the player chooses to defend themselves, they sustain 50% less damage than normal
 * As soon as the life points of a player (initially 100) falls to 0, they lose. A message appears and the game is over.
 
+[Link to demo video](https://drive.google.com/file/d/15cV2ui3wpgWgMI6Ndzp3NwGwUuV02jI-/view)
 
 ![picture](/image/project6-pic.jpg)
